@@ -3044,15 +3044,22 @@ We'll play for again and again</p></div></div>
           otherParentalHtml += buildPartnerCardHtml(g);
           otherParentalCount++;
         } else {
-          // No children together, so this is context, not a parent \u2014 shown
-          // as a small note rather than a full card, and says so plainly.
+          // No children together, so this isn\u2019t a parent \u2014 but they\u2019re
+          // still a real, current (or past) partner, so they get their own
+          // small card rather than being folded into a plain text note.
           var id = g.partnerId;
           var pSex = fdbPeopleById[id] ? fdbPeopleById[id].sex : null;
+          var pSexClassNote = pSex === "M" ? " sex-m" : (pSex === "F" ? " sex-f" : "");
           var pLabelObj = fdbLabel(id);
-          var pKnownHtml = pLabelObj.known ? " (known as "+esc(pLabelObj.known)+")" : "";
+          var pKnownHtml = pLabelObj.known ? " <span class=\"nee-note\">(known as "+esc(pLabelObj.known)+")</span>" : "";
           var parentWord = pSex === "M" ? "the father" : (pSex === "F" ? "the mother" : "a parent");
           var focusFirstName = focus.known || fdbFirstName(focus.name);
-          html += "<p class=\"partner-note\">"+(g.isPast ? "Past partner" : "Current partner")+": <strong>"+esc(pLabelObj.name)+"</strong>"+pKnownHtml+" \u2014 not "+parentWord+" of "+esc(focusFirstName)+"\u2019s children.</p>";
+          html += "<button type=\"button\" class=\"partner-card partner-card-secondary"+pSexClassNote+"\" data-tree-focus=\""+id+"\">";
+          html += "<span class=\"row-label\">"+(g.isPast ? "Past partner" : "Current partner")+"</span>";
+          html += "<span class=\"partner-card-body\">";
+          html += "<span class=\"family-tree-avatar"+pSexClassNote+"\">"+esc(fdbInitials(pLabelObj.name))+"</span>";
+          html += "<span class=\"partner-card-text\"><strong>"+esc(pLabelObj.name)+"</strong>"+pKnownHtml+"<small>Not "+parentWord+" of "+esc(focusFirstName)+"\u2019s children</small></span>";
+          html += "</span></button>";
         }
       });
       if(otherParentalCount){
